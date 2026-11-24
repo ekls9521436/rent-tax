@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>房東租屋稅金即時試算｜住商不動產 林佳麒 C.C.LIN</title>
+  <style>
+    :root { --primary: #006837; --bg: #f4f7f5; --card: #ffffff; --text: #222; --muted: #666; --border: #dce5df; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", sans-serif; }
+    body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 460px; background: var(--card); border-radius: 16px; padding: 22px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
+    .header { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 18px; }
+    .header h1 { margin: 0; font-size: 20px; color: var(--primary); }
+    .header p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+    .form-group { margin-bottom: 14px; }
+    label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    label span { color: var(--primary); font-size: 12px; }
+    input, select { width: 100%; padding: 10px 12px; font-size: 16px; border: 1px solid var(--border); border-radius: 10px; background: #fafcfb; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; background: #eaf1ec; padding: 4px; border-radius: 10px; margin-bottom: 16px; }
+    .tab { text-align: center; padding: 8px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--muted); }
+    .tab.active { background: var(--primary); color: #fff; }
+    .result-box { background: #f0f7f3; border: 1px solid #cce3d5; border-radius: 12px; padding: 16px; margin-top: 16px; }
+    .result-main { text-align: center; padding-bottom: 12px; border-bottom: 1px dashed #b9d6c4; }
+    .result-main .title { font-size: 13px; color: var(--muted); }
+    .result-main .amount { font-size: 28px; font-weight: 800; color: var(--primary); margin: 4px 0; }
+    .badge { display: inline-block; background: #dff0e6; color: var(--primary); font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-top: 4px; }
+    .result-details { margin-top: 12px; font-size: 13px; display: grid; gap: 7px; }
+    .detail-row { display: flex; justify-content: space-between; }
+    .detail-row span:last-child { font-weight: 600; }
+    .compare-box { margin-top: 12px; padding: 10px 12px; background: #fff; border: 1px solid #dce5df; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #444; }
+    .cta-btn { display: block; width: 100%; text-align: center; margin-top: 16px; padding: 13px; background: var(--primary); color: #fff; text-decoration: none; font-weight: 700; font-size: 15px; border-radius: 10px; }
+    .note { text-align: center; font-size: 11px; color: #888; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>房東租屋所得稅即時試算</h1>
+      <p>住商不動產 建國民生加盟店｜林佳麒 C.C.LIN</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" id="tab-charity" onclick="setMode('charity')">公益出租人 (享1.5萬免稅)</div>
+      <div class="tab" id="tab-normal" onclick="setMode('normal')">一般自然人出租</div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label>每月租金 (元)</label>
+        <input type="number" id="rent" value="25000" step="500" oninput="calc()" onchange="calc()">
+      </div>
+      <div class="form-group">
+        <label>房東綜所稅率</label>
+        <select id="tax-rate" onchange="calc()">
+          <option value="0.05">5% (淨所得59萬內)</option>
+          <option value="0.12" selected>12% (59萬~133萬)</option>
+          <option value="0.20">20% (133萬~266萬)</option>
+          <option value="0.30">30% (266萬~498萬)</option>
+          <option value="0.40">40% (498萬以上)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label>出租月數 (年)</label>
+        <select id="months" onchange="calc()">
+          <option value="12" selected>12 個月 (全年)</option>
+          <option value="10">10 個月</option>
+          <option value="8">8 個月</option>
+          <option value="6">6 個月</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>單筆租金性質</label>
+        <select id="tenant-type" onchange="calc()">
+          <option value="person" selected>一般個人承租</option>
+          <option value="corp">公司行號承租</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-main">
+        <div class="title" id="main-label">預估全年新增綜所稅額</div>
+        <div class="amount" id="annual-tax">$4,104 元</div>
+        <div class="badge" id="monthly-avg">平均每月僅約 $342 元</div>
+      </div>
+      <div class="result-details">
+        <div class="detail-row"><span>全年總租金收入：</span><span id="gross-rent">300,000 元</span></div>
+        <div class="detail-row"><span>每月免稅額扣除：</span><span id="exempt-amt">180,000 元 (1.5萬/月)</span></div>
+        <div class="detail-row"><span>必要費用率扣除 (43%)：</span><span id="expense-amt">51,600 元</span></div>
+        <div class="detail-row"><span>實際併入所得淨額：</span><span id="taxable-income">68,400 元</span></div>
+        <div class="detail-row"><span>二代健保補充保費 (2.11%)：</span><span id="nhi-fee">0 元</span></div>
+      </div>
+      <div class="compare-box" id="tip-box"></div>
+    </div>
+
+    <a href="tel:0968783477" class="cta-btn">📞 委託出租與節稅規劃｜撥打 0968-783-477</a>
+    <div class="note">※ 依現行所得稅法標準費用率 43% 試算，若採列舉扣除實際修繕/貸款利息可再節稅</div>
+  </div>
+
+  <script>
+    var mode = 'charity';
+    function setMode(m) {
+      mode = m;
+      document.getElementById('tab-charity').className = m === 'charity' ? 'tab active' : 'tab';
+      document.getElementById('tab-normal').className = m === 'normal' ? 'tab active' : 'tab';
+      calc();
+    }
+    function calc() {
+      var rent = parseFloat(document.getElementById('rent').value) || 0;
+      var rate = parseFloat(document.getElementById('tax-rate').value) || 0.12;
+      var months = parseInt(document.getElementById('months').value) || 12;
+      var tenantType = document.getElementById('tenant-type').value;
+
+      var gross = rent * months;
+      var exemptPerMonth = (mode === 'charity') ? 15000 : 0;
+      var totalExempt = Math.min(gross, exemptPerMonth * months);
+      var afterExempt = Math.max(0, gross - totalExempt);
+      var expense = afterExempt * 0.43;
+      var taxable = Math.max(0, afterExempt - expense);
+      var tax = taxable * rate;
+
+      // 二代健保補充保費：僅「公司行號」承租且單筆給付達 20,000 元以上需扣繳 2.11%
+      var nhi = (tenantType === 'corp' && rent >= 20000) ? (gross * 0.0211) : 0;
+      var totalCost = tax + nhi;
+
+      document.getElementById('annual-tax').innerText = '$' + Math.round(totalCost).toLocaleString('zh-TW') + ' 元';
+      document.getElementById('monthly-avg').innerText = '平均每月稅費僅約 $' + Math.round(totalCost / months).toLocaleString('zh-TW') + ' 元';
+      document.getElementById('gross-rent').innerText = Math.round(gross).toLocaleString('zh-TW') + ' 元';
+      document.getElementById('exempt-amt').innerText = mode === 'charity' ? (Math.round(totalExempt).toLocaleString('zh-TW') + ' 元 (1.5萬/月)') : '0 元 (一般出租無免稅額)';
+      document.getElementById('expense-amt').innerText = Math.round(expense).toLocaleString('zh-TW') + ' 元';
+      document.getElementById('taxable-income').innerText = Math.round(taxable).toLocaleString('zh-TW') + ' 元';
+      document.getElementById('nhi-fee').innerText = Math.round(nhi).toLocaleString('zh-TW') + ' 元' + (tenantType === 'person' ? ' (個人承租免扣)' : '');
+
+      var tipEl = document.getElementById('tip-box');
+      if (mode === 'charity') {
+        var normalTax = (gross * 0.57 * rate) + nhi;
+        var saved = Math.max(0, normalTax - totalCost);
+        tipEl.innerHTML = '💡 <b>公益出租人優勢：</b>房客申請租金補貼自動成為公益出租人，除每月 1.5 萬免稅、年省綜所稅 <b>$' + Math.round(saved).toLocaleString('zh-TW') + ' 元</b>外，房屋稅與地價稅同步享自用住宅優惠稅率！';
+      } else {
+        tipEl.innerHTML = '💡 <b>稅務提醒：</b>一般自然人出租可直接扣除 <b>43% 必要費用</b>（僅 57% 併入所得）；若房客符合資格申請租金補貼，屋主可自動轉為公益出租人，享有每月 15,000 元免稅額。';
+      }
+    }
+    window.onload = calc;
+  </script>
+</body>
+</html>
