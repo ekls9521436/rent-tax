@@ -12,13 +12,19 @@ body{margin:0;padding:16px;background:var(--bg);color:var(--t);display:flex;just
 .hd{text-align:center;border-bottom:1px solid var(--b);padding-bottom:12px;margin-bottom:14px}
 .hd h1{margin:0;font-size:20px;color:var(--p)}.hd p{margin:4px 0 0;font-size:13px;color:var(--m)}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#eaf1ec;padding:4px;border-radius:10px;margin-bottom:14px}
-.tab{text-align:center;padding:10px 4px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--m);user-select:none;-webkit-user-select:none}
+.tab{text-align:center;padding:10px 4px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--m);user-select:none}
 .tab.on{background:var(--p);color:#fff}
 .fg{margin-bottom:12px}label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
 input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--b);border-radius:10px;background:#fafcfb}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lt-list{display:grid;gap:7px}
+.lt-item{padding:9px 12px;border:1px solid var(--b);border-radius:10px;background:#fafcfb;cursor:pointer;user-select:none}
+.lt-item.on{border-color:var(--p);background:#eef5f1}
+.lt-title{font-size:14px;font-weight:700;color:var(--t)}
+.lt-item.on .lt-title{color:var(--p)}
+.lt-sub{font-size:12px;color:#888;margin-top:2px}
 .rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.ri{text-align:center;padding:11px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb;user-select:none;-webkit-user-select:none}
+.ri{text-align:center;padding:11px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb;user-select:none}
 .ri.on{border-color:var(--p);background:#eef5f1;color:var(--p)}
 .res{background:#f0f7f3;border:1px solid #cce3d5;border-radius:12px;padding:14px;margin-top:12px}
 .rm{text-align:center;padding-bottom:10px;border-bottom:1px dashed #b9d6c4}
@@ -27,7 +33,7 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
 .dr{display:flex;justify-content:space-between}.dr span:last-child{font-weight:700}
 .hl{border-top:1px dashed #b9d6c4;padding-top:7px;color:var(--p);font-size:14px}
 .tip{margin-top:10px;padding:9px 10px;background:#fff;border-radius:8px;font-size:12px;color:#333;line-height:1.5;border:1px solid var(--b)}
-.btn{display:block;width:100%;text-align:center;margin-top:14px;padding:13px;background:var(--p);color:#fff;text-decoration:none;font-weight:700;font-size:15px;border-radius:10px}
+.btn{display:block;width:100%;text-align:center;margin-top:14px;padding:12px;background:var(--p);color:#fff;text-decoration:none;font-weight:700;font-size:15px;line-height:1.4;border-radius:10px}
 .nt{text-align:center;font-size:11px;color:#888;margin-top:8px}
 </style>
 </head>
@@ -44,11 +50,20 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
   <div id="p1">
     <div class="fg">
       <label>房東身分</label>
-      <select id="lt" onchange="cw()">
-        <option value="local" selected>本國個人房東 (扣繳10% + 二代健保2.11%)</option>
-        <option value="foreign">非居住者/外國人 (扣繳20%，免二代健保)</option>
-        <option value="corp">法人/公司房東 (免扣繳健保，需開發票)</option>
-      </select>
+      <div class="lt-list">
+        <div class="lt-item on" id="lt-local" onclick="slt('local')">
+          <div class="lt-title">本國個人房東</div>
+          <div class="lt-sub">（扣繳10% + 二代健保2.11%）</div>
+        </div>
+        <div class="lt-item" id="lt-foreign" onclick="slt('foreign')">
+          <div class="lt-title">非居住者/外國人</div>
+          <div class="lt-sub">（扣繳20%，免二代健保）</div>
+        </div>
+        <div class="lt-item" id="lt-corp" onclick="slt('corp')">
+          <div class="lt-title">法人/公司房東</div>
+          <div class="lt-sub">（免扣繳健保，需開發票）</div>
+        </div>
+      </div>
     </div>
     <div class="fg">
       <label>每期租金金額 (元)</label>
@@ -111,19 +126,20 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
       <div class="tip" id="atip"></div>
     </div>
   </div>
-  <a href="tel:0968783477" class="btn">📞 委託出租與稅務試算諮詢｜撥打 0968-783-477</a>
+  <a href="tel:0968783477" class="btn">📞 委託出租與稅務試算諮詢｜聯繫<br>0968-783-477</a>
   <div class="nt">※ 所得稅超過2,000元、二代健保達20,000元起扣</div>
 </div>
 <script>
-var tm='inc',am='normal';
+var lt='local',tm='inc',am='normal';
 function sw(n){document.getElementById('p1').style.display=n==1?'block':'none';document.getElementById('p2').style.display=n==2?'block':'none';document.getElementById('n1').className=n==1?'tab on':'tab';document.getElementById('n2').className=n==2?'tab on':'tab'}
+function slt(v){lt=v;document.getElementById('lt-local').className=v=='local'?'lt-item on':'lt-item';document.getElementById('lt-foreign').className=v=='foreign'?'lt-item on':'lt-item';document.getElementById('lt-corp').className=v=='corp'?'lt-item on':'lt-item';cw()}
 function sam(m){am=m;document.getElementById('s1').className=m=='normal'?'tab on':'tab';document.getElementById('s2').className=m=='charity'?'tab on':'tab';ca()}
 function stm(m){tm=m;document.getElementById('o1').className=m=='inc'?'ri on':'ri';document.getElementById('o1').innerText=m=='inc'?'● 租金已含稅':'○ 租金已含稅';document.getElementById('o2').className=m=='exc'?'ri on':'ri';document.getElementById('o2').innerText=m=='exc'?'● 租金未稅 (實拿)':'○ 租金未稅 (實拿)';cw()}
 function f(n){return'$'+Math.floor(n).toLocaleString('zh-TW')+' 元'}
 function cw(){
-var t=document.getElementById('lt').value,v=parseFloat(document.getElementById('wr').value)||0,g=0,tx=0,nh=0,nt=0;
-if(t=='corp'){g=nt=v;document.getElementById('wtl').innerText='代扣所得稅 (0%)：';document.getElementById('wdead').innerText='※ 法人房東應開立發票，承租公司免扣繳與健保'}
-else if(t=='foreign'){document.getElementById('wtl').innerText='代扣所得稅 (20%)：';document.getElementById('wdead').innerText='※ 外國人：給付日起 10 日內完成扣繳申報';if(tm=='inc'){g=v;tx=Math.floor(g*.2);nt=g-tx}else{nt=v;g=Math.round(nt/.8);tx=g-nt}}
+var v=parseFloat(document.getElementById('wr').value)||0,g=0,tx=0,nh=0,nt=0;
+if(lt=='corp'){g=nt=v;document.getElementById('wtl').innerText='代扣所得稅 (0%)：';document.getElementById('wdead').innerText='※ 法人房東應開立發票，承租公司免扣繳與健保'}
+else if(lt=='foreign'){document.getElementById('wtl').innerText='代扣所得稅 (20%)：';document.getElementById('wdead').innerText='※ 外國人：給付日起 10 日內完成扣繳申報';if(tm=='inc'){g=v;tx=Math.floor(g*.2);nt=g-tx}else{nt=v;g=Math.round(nt/.8);tx=g-nt}}
 else{document.getElementById('wtl').innerText='代扣所得稅 (10%)：';document.getElementById('wdead').innerText='※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書';if(tm=='inc'){g=v;tx=Math.floor(g*.1)>2000?Math.floor(g*.1):0;nh=g>=20000?Math.floor(g*.0211):0;nt=g-tx-nh}else{nt=v;var eg=nt/.8789;if(Math.floor(eg*.1)>2000&&eg>=20000){g=Math.floor(nt/.8789);tx=Math.floor(g*.1);nh=Math.floor(g*.0211);if(g-tx-nh<nt){g++;tx=Math.floor(g*.1);nh=Math.floor(g*.0211)}}else if(nt/.9789>=20000){g=Math.round(nt/.9789);nh=Math.floor(g*.0211)}else{g=nt}}}
 document.getElementById('wt1').innerText=tm=='inc'?'實際支付房東租金 (未稅實拿)':'承租方需編列租金總額 (含稅)';
 document.getElementById('wa1').innerText=f(tm=='inc'?nt:g);
