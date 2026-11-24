@@ -1,190 +1,101 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>租金扣繳與稅金計算機｜住商不動產 林佳麒 C.C.LIN</title>
-  <style>
-    :root { --primary: #006837; --bg: #f4f7f5; --card: #ffffff; --text: #222; --muted: #666; --border: #dce5df; }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", sans-serif; }
-    body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 460px; background: var(--card); border-radius: 16px; padding: 22px; box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-    .header { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 16px; }
-    .header h1 { margin: 0; font-size: 20px; color: var(--primary); }
-    .header p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
-    .main-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #eaf1ec; padding: 4px; border-radius: 10px; margin-bottom: 16px; }
-    .tab { text-align: center; padding: 9px 4px; font-size: 13px; font-weight: 700; border-radius: 8px; cursor: pointer; color: var(--muted); }
-    .tab.active { background: var(--primary); color: #fff; }
-    .sub-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #eaf1ec; padding: 4px; border-radius: 10px; margin-bottom: 14px; }
-    .form-group { margin-bottom: 14px; }
-    label { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-    input[type="number"], select { width: 100%; padding: 10px 12px; font-size: 16px; border: 1px solid var(--border); border-radius: 10px; background: #fafcfb; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-    .radio-item {
-      display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px;
-      border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; background: #fafcfb;
-    }
-    .radio-item.checked { border-color: var(--primary); background: #eef5f1; color: var(--primary); }
-    .result-box { background: #f0f7f3; border: 1px solid #cce3d5; border-radius: 12px; padding: 16px; margin-top: 14px; }
-    .result-main { text-align: center; padding-bottom: 12px; border-bottom: 1px dashed #b9d6c4; }
-    .result-main .title { font-size: 13px; color: var(--muted); }
-    .result-main .amount { font-size: 28px; font-weight: 800; color: var(--primary); margin: 4px 0; }
-    .result-details { margin-top: 12px; font-size: 13px; display: grid; gap: 8px; }
-    .detail-row { display: flex; justify-content: space-between; align-items: center; }
-    .detail-row span:last-child { font-weight: 700; }
-    .highlight-row { border-top: 1px dashed #b9d6c4; padding-top: 8px; color: var(--primary); font-size: 14px; }
-    .deadline-tip { margin-top: 10px; padding: 8px 10px; background: #fff; border-radius: 8px; font-size: 12px; color: #b45309; font-weight: 600; text-align: center; border: 1px solid #fde68a; }
-    .tip-box { margin-top: 10px; padding: 10px 12px; background: #fff; border-radius: 8px; font-size: 12px; color: #333; line-height: 1.5; border: 1px solid #dce5df; }
-    .cta-btn { display: block; width: 100%; text-align: center; margin-top: 16px; padding: 13px; background: var(--primary); color: #fff; text-decoration: none; font-weight: 700; font-size: 15px; border-radius: 10px; }
-    .note { text-align: center; font-size: 11px; color: #888; margin-top: 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>租金扣繳與稅金計算機｜住商不動產 林佳麒 C.C.LIN</title>
+<style>
+:root{--p:#006837;--bg:#f4f7f5;--c:#fff;--t:#222;--m:#666;--b:#dce5df}
+*{box-sizing:border-box;font-family:-apple-system,"Noto Sans TC",sans-serif}
+body{margin:0;padding:16px;background:var(--bg);color:var(--t);display:flex;justify-content:center}
+.box{width:100%;max-width:460px;background:var(--c);border-radius:16px;padding:20px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
+.hd{text-align:center;border-bottom:1px solid var(--b);padding-bottom:12px;margin-bottom:14px}
+.hd h1{margin:0;font-size:20px;color:var(--p)}.hd p{margin:4px 0 0;font-size:13px;color:var(--m)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#eaf1ec;padding:4px;border-radius:10px;margin-bottom:14px}
+.tab{text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--m)}
+.tab.on{background:var(--p);color:#fff}
+.fg{margin-bottom:12px}label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--b);border-radius:10px;background:#fafcfb}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ri{text-align:center;padding:10px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb}
+.ri.on{border-color:var(--p);background:#eef5f1;color:var(--p)}
+.res{background:#f0f7f3;border:1px solid #cce3d5;border-radius:12px;padding:14px;margin-top:12px}
+.rm{text-align:center;padding-bottom:10px;border-bottom:1px dashed #b9d6c4}
+.rm .ti{font-size:13px;color:var(--m)}.rm .am{font-size:28px;font-weight:800;color:var(--p);margin:4px 0}
+.rd{margin-top:10px;font-size:13px;display:grid;gap:7px}
+.dr{display:flex;justify-content:space-between}.dr span:last-child{font-weight:700}
+.hl{border-top:1px dashed #b9d6c4;padding-top:7px;color:var(--p);font-size:14px}
+.tip{margin-top:10px;padding:9px 10px;background:#fff;border-radius:8px;font-size:12px;color:#333;line-height:1.5;border:1px solid var(--b)}
+.btn{display:block;width:100%;text-align:center;margin-top:14px;padding:13px;background:var(--p);color:#fff;text-decoration:none;font-weight:700;font-size:15px;border-radius:10px}
+.nt{text-align:center;font-size:11px;color:#888;margin-top:8px}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>租金扣繳與稅金計算機</h1>
-      <p>住商不動產 建國民生加盟店｜林佳麒 C.C.LIN</p>
-    </div>
-
-    <div class="main-tabs">
-      <div class="tab active" id="nav-withhold" onclick="switchPanel('withhold')">公司租賃扣繳 (含/未稅)</div>
-      <div class="tab" id="nav-annual" onclick="switchPanel('annual')">房東年度綜所稅試算</div>
-    </div>
-
-    <!-- 面板一：公司行號租金扣繳計算機 -->
-    <div id="panel-withhold">
-      <div class="form-group">
-        <label>房東身分</label>
-        <select id="landlord-type" onchange="calcWithhold()">
-          <option value="local" selected>本國個人房東 (扣繳10% + 二代健保2.11%)</option>
-          <option value="foreign">非居住者/外國人 (扣繳20%，免二代健保)</option>
-          <option value="company">法人/公司房東 (免扣繳與健保，需開發票)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>每期租金金額 (元)</label>
-        <input type="number" id="w-rent" value="88880" step="100" oninput="calcWithhold()" onchange="calcWithhold()">
-        <div class="radio-group">
-          <div class="radio-item checked" id="opt-inc" onclick="setTaxMode('inc')">● 租金已含稅</div>
-          <div class="radio-item" id="opt-exc" onclick="setTaxMode('exc')">○ 租金未稅 (實拿)</div>
-        </div>
-      </div>
-
-      <div class="result-box">
-        <div class="result-main">
-          <div class="title" id="w-main-title">實際支付房東租金 (未稅實拿)</div>
-          <div class="amount" id="w-main-amt">$78,117 元</div>
-        </div>
-        <div class="result-details">
-          <div class="detail-row"><span>每期租金總額 (含稅)：</span><span id="w-gross">$88,880 元</span></div>
-          <div class="detail-row"><span id="w-tax-label">代扣所得稅 (10%)：</span><span id="w-tax">$8,888 元</span></div>
-          <div class="detail-row"><span>代扣二代健保 (2.11%)：</span><span id="w-nhi">$1,875 元</span></div>
-          <div class="detail-row highlight-row"><span>租扣＋二代健保總金額：</span><span id="w-total-deduct">$10,763 元</span></div>
-          <div class="detail-row highlight-row"><span>實際支付房東 (未稅)：</span><span id="w-net">$78,117 元</span></div>
-        </div>
-        <div class="deadline-tip" id="w-deadline">※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書</div>
-      </div>
-    </div>
-
-    <!-- 面板二：房東個人年度綜所稅試算（一般在左、公益在右、預設一般） -->
-    <div id="panel-annual" style="display:none;">
-      <div class="sub-tabs">
-        <div class="tab active" id="sub-normal" onclick="setAnnualMode('normal')">一般自然人出租</div>
-        <div class="tab" id="sub-charity" onclick="setAnnualMode('charity')">公益出租人 (享1.5萬免稅)</div>
-      </div>
-
-      <div class="row">
-        <div class="form-group">
-          <label>每月租金 (元)</label>
-          <input type="number" id="a-rent" value="25000" step="500" oninput="calcAnnual()" onchange="calcAnnual()">
-        </div>
-        <div class="form-group">
-          <label>房東綜所稅率</label>
-          <select id="a-rate" onchange="calcAnnual()">
-            <option value="0.05">5% (59萬內)</option>
-            <option value="0.12" selected>12% (59~133萬)</option>
-            <option value="0.20">20% (133~266萬)</option>
-            <option value="0.30">30% (266~498萬)</option>
-            <option value="0.40">40% (498萬以上)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>全年出租月數</label>
-        <select id="a-months" onchange="calcAnnual()">
-          <option value="12" selected>12 個月 (全年)</option>
-          <option value="10">10 個月</option>
-          <option value="8">8 個月</option>
-          <option value="6">6 個月</option>
-        </select>
-      </div>
-
-      <div class="result-box">
-        <div class="result-main">
-          <div class="title">預估全年新增綜所稅額</div>
-          <div class="amount" id="a-tax">$20,520 元</div>
-        </div>
-        <div class="result-details">
-          <div class="detail-row"><span>全年總租金收入：</span><span id="a-gross">$300,000 元</span></div>
-          <div class="detail-row"><span>每月免稅額扣除：</span><span id="a-exempt">$0 元</span></div>
-          <div class="detail-row"><span>必要費用扣除 (43%)：</span><span id="a-exp">$129,000 元</span></div>
-          <div class="detail-row highlight-row"><span>實際併入所得淨額：</span><span id="a-net">$171,000 元</span></div>
-        </div>
-        <div class="tip-box" id="a-tip"></div>
-      </div>
-    </div>
-
-    <a href="tel:0968783477" class="cta-btn">📞 委託出租與稅務試算諮詢｜撥打 0968-783-477</a>
-    <div class="note">※ 試算依現行稅法扣繳標準（所得稅超過2,000元、二代健保達20,000元起扣）</div>
+<div class="box">
+  <div class="hd">
+    <h1>租金扣繳與稅金計算機</h1>
+    <p>住商不動產 建國民生加盟店｜林佳麒 C.C.LIN</p>
   </div>
-
-  <script>
-    var taxMode = 'inc';
-    var annualMode = 'normal';
-
-    function switchPanel(p) {
-      document.getElementById('panel-withhold').style.display = (p === 'withhold') ? 'block' : 'none';
-      document.getElementById('panel-annual').style.display = (p === 'annual') ? 'block' : 'none';
-      document.getElementById('nav-withhold').className = (p === 'withhold') ? 'tab active' : 'tab';
-      document.getElementById('nav-annual').className = (p === 'annual') ? 'tab active' : 'tab';
-    }
-
-    function setAnnualMode(m) {
-      annualMode = m;
-      document.getElementById('sub-normal').className = (m === 'normal') ? 'tab active' : 'tab';
-      document.getElementById('sub-charity').className = (m === 'charity') ? 'tab active' : 'tab';
-      calcAnnual();
-    }
-
-    function setTaxMode(m) {
-      taxMode = m;
-      document.getElementById('opt-inc').className = (m === 'inc') ? 'radio-item checked' : 'radio-item';
-      document.getElementById('opt-inc').innerText = (m === 'inc') ? '● 租金已含稅' : '○ 租金已含稅';
-      document.getElementById('opt-exc').className = (m === 'exc') ? 'radio-item checked' : 'radio-item';
-      document.getElementById('opt-exc').innerText = (m === 'exc') ? '● 租金未稅 (實拿)' : '○ 租金未稅 (實拿)';
-      calcWithhold();
-    }
-
-    function fmt(n) {
-      return '$' + Math.floor(n).toLocaleString('zh-TW') + ' 元';
-    }
-
-    function calcWithhold() {
-      var type = document.getElementById('landlord-type').value;
-      var inputAmt = parseFloat(document.getElementById('w-rent').value) || 0;
-      var gross = 0, tax = 0, nhi = 0, net = 0;
-
-      if (type === 'company') {
-        gross = inputAmt;
-        net = inputAmt;
-        document.getElementById('w-tax-label').innerText = '代扣所得稅 (0%)：';
-        document.getElementById('w-deadline').innerText = '※ 法人房東應開立統一發票，承租公司無需代扣所得稅與二代健保';
-      } else if (type === 'foreign') {
-        document.getElementById('w-tax-label').innerText = '代扣所得稅 (20%)：';
-        document.getElementById('w-deadline').innerText = '※ 外國人/非居住者：承租公司應於給付日起 10 日內完成扣繳申報';
+  <div class="tabs">
+    <div class="tab on" id="n1" onclick="sw(1)">公司租賃扣繳 (含/未稅)</div>
+    <div class="tab" id="n2" onclick="sw(2)">房東年度綜所稅試算</div>
+  </div>
+  <div id="p1">
+    <div class="fg">
+      <label>房東身分</label>
+      <select id="lt" onchange="cw()">
+        <option value="local" selected>本國個人房東 (扣繳10% + 二代健保2.11%)</option>
+        <option value="foreign">非居住者/外國人 (扣繳20%，免二代健保)</option>
+        <option value="corp">法人/公司房東 (免扣繳健保，需開發票)</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>每期租金金額 (元)</label>
+      <input type="number" id="wr" value="88880" oninput="cw()" onchange="cw()">
+      <div class="rg">
+        <div class="ri on" id="o1" onclick="stm('inc')">● 租金已含稅</div>
+        <div class="ri" id="o2" onclick="stm('exc')">○ 租金未稅 (實拿)</div>
+      </div>
+    </div>
+    <div class="res">
+      <div class="rm">
+        <div class="ti" id="wt1">實際支付房東租金 (未稅實拿)</div>
+        <div class="am" id="wa1">$78,117 元</div>
+      </div>
+      <div class="rd">
+        <div class="dr"><span>每期租金總額 (含稅)：</span><span id="wg">$88,880 元</span></div>
+        <div class="dr"><span id="wtl">代扣所得稅 (10%)：</span><span id="wt">$8,888 元</span></div>
+        <div class="dr"><span>代扣二代健保 (2.11%)：</span><span id="wn">$1,875 元</span></div>
+        <div class="dr hl"><span>租扣＋二代健保總金額：</span><span id="wd">$10,763 元</span></div>
+        <div class="dr hl"><span>實際支付房東 (未稅)：</span><span id="wnet">$78,117 元</span></div>
+      </div>
+      <div class="tip" id="wdead" style="color:#b45309;font-weight:600;text-align:center">※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書</div>
+    </div>
+  </div>
+  <div id="p2" style="display:none">
+    <div class="tabs">
+      <div class="tab on" id="s1" onclick="sam('normal')">一般自然人出租</div>
+      <div class="tab" id="s2" onclick="sam('charity')">公益出租人 (1.5萬免稅)</div>
+    </div>
+    <div class="row">
+      <div class="fg"><label>每月租金 (元)</label><input type="number" id="ar" value="25000" oninput="ca()" onchange="ca()"></div>
+      <div class="fg"><label>房東綜所稅率</label>
+        <select id="art" onchange="ca()">
+          <option value="0.05">5% (59萬內)</option>
+          <option value="0.12" selected>12% (59~133萬)</option>
+          <option value="0.20">20% (133~266萬)</option>
+          <option value="0.30">30% (266~498萬)</option>
+          <option value="0.40">40% (498萬以上)</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>全年出租月數</label>
+      <select id="am" onchange="ca()">
+        <option value="12" selected>12 個月 (全年)</option>
+        <option value="10">10 個月</option>
+        <option value="6">6 個月</option
+    document.getElementById('w-deadline').innerText = '※ 外國人/非居住者：承租公司應於給付日起 10 日內完成扣繳申報';
         if (taxMode === 'inc') {
           gross = inputAmt;
           tax = Math.floor(gross * 0.20);
