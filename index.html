@@ -6,19 +6,19 @@
 <title>租金扣繳與稅金計算機｜住商不動產 林佳麒 C.C.LIN</title>
 <style>
 :root{--p:#006837;--bg:#f4f7f5;--c:#fff;--t:#222;--m:#666;--b:#dce5df}
-*{box-sizing:border-box;font-family:-apple-system,"Noto Sans TC",sans-serif}
+*{box-sizing:border-box;font-family:-apple-system,"Noto Sans TC",sans-serif;-webkit-tap-highlight-color:transparent}
 body{margin:0;padding:16px;background:var(--bg);color:var(--t);display:flex;justify-content:center}
 .box{width:100%;max-width:460px;background:var(--c);border-radius:16px;padding:20px;box-shadow:0 6px 20px rgba(0,0,0,.06)}
 .hd{text-align:center;border-bottom:1px solid var(--b);padding-bottom:12px;margin-bottom:14px}
 .hd h1{margin:0;font-size:20px;color:var(--p)}.hd p{margin:4px 0 0;font-size:13px;color:var(--m)}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#eaf1ec;padding:4px;border-radius:10px;margin-bottom:14px}
-.tab{text-align:center;padding:8px 4px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--m)}
+.tab{text-align:center;padding:10px 4px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--m);user-select:none;-webkit-user-select:none}
 .tab.on{background:var(--p);color:#fff}
 .fg{margin-bottom:12px}label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
 input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--b);border-radius:10px;background:#fafcfb}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.ri{text-align:center;padding:10px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb}
+.ri{text-align:center;padding:11px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb;user-select:none;-webkit-user-select:none}
 .ri.on{border-color:var(--p);background:#eef5f1;color:var(--p)}
 .res{background:#f0f7f3;border:1px solid #cce3d5;border-radius:12px;padding:14px;margin-top:12px}
 .rm{text-align:center;padding-bottom:10px;border-bottom:1px dashed #b9d6c4}
@@ -94,94 +94,49 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
       <select id="am" onchange="ca()">
         <option value="12" selected>12 個月 (全年)</option>
         <option value="10">10 個月</option>
-        <option value="6">6 個月</option
-    document.getElementById('w-deadline').innerText = '※ 外國人/非居住者：承租公司應於給付日起 10 日內完成扣繳申報';
-        if (taxMode === 'inc') {
-          gross = inputAmt;
-          tax = Math.floor(gross * 0.20);
-          net = gross - tax;
-        } else {
-          net = inputAmt;
-          gross = Math.round(net / 0.80);
-          tax = gross - net;
-        }
-      } else {
-        document.getElementById('w-tax-label').innerText = '代扣所得稅 (10%)：';
-        document.getElementById('w-deadline').innerText = '※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書';
-        if (taxMode === 'inc') {
-          gross = inputAmt;
-          var rawTax = Math.floor(gross * 0.10);
-          tax = (rawTax > 2000) ? rawTax : 0;
-          nhi = (gross >= 20000) ? Math.floor(gross * 0.0211) : 0;
-          net = gross - tax - nhi;
-        } else {
-          net = inputAmt;
-          var estGross = net / 0.8789;
-          if (Math.floor(estGross * 0.10) > 2000 && estGross >= 20000) {
-            gross = Math.floor(net / 0.8789);
-            tax = Math.floor(gross * 0.10);
-            nhi = Math.floor(gross * 0.0211);
-            if (gross - tax - nhi < net) { gross += 1; tax = Math.floor(gross * 0.10); nhi = Math.floor(gross * 0.0211); }
-          } else if (net / 0.9789 >= 20000) {
-            gross = Math.round(net / 0.9789);
-            tax = 0;
-            nhi = Math.floor(gross * 0.0211);
-          } else {
-            gross = net;
-            tax = 0;
-            nhi = 0;
-          }
-        }
-      }
-
-      if (taxMode === 'inc') {
-        document.getElementById('w-main-title').innerText = '實際支付房東租金 (未稅實拿)';
-        document.getElementById('w-main-amt').innerText = fmt(net);
-      } else {
-        document.getElementById('w-main-title').innerText = '承租方需編列租金總額 (含稅)';
-        document.getElementById('w-main-amt').innerText = fmt(gross);
-      }
-
-      document.getElementById('w-gross').innerText = fmt(gross);
-      document.getElementById('w-tax').innerText = fmt(tax);
-      document.getElementById('w-nhi').innerText = fmt(nhi);
-      document.getElementById('w-total-deduct').innerText = fmt(tax + nhi);
-      document.getElementById('w-net').innerText = fmt(net);
-    }
-
-    function calcAnnual() {
-      var rate = parseFloat(document.getElementById('a-rate').value) || 0.12;
-      var rent = parseFloat(document.getElementById('a-rent').value) || 0;
-      var months = parseInt(document.getElementById('a-months').value) || 12;
-
-      var gross = rent * months;
-      var exempt = (annualMode === 'charity') ? Math.min(gross, 15000 * months) : 0;
-      var afterExempt = Math.max(0, gross - exempt);
-      var exp = afterExempt * 0.43;
-      var net = Math.max(0, afterExempt - exp);
-      var tax = net * rate;
-
-      document.getElementById('a-tax').innerText = fmt(tax);
-      document.getElementById('a-gross').innerText = fmt(gross);
-      document.getElementById('a-exempt').innerText = fmt(exempt);
-      document.getElementById('a-exp').innerText = fmt(exp);
-      document.getElementById('a-net').innerText = fmt(net);
-
-      var tipEl = document.getElementById('a-tip');
-      if (annualMode === 'normal') {
-        var charityExempt = Math.min(gross, 15000 * months);
-        var charityTax = Math.max(0, (gross - charityExempt) * 0.57 * rate);
-        var diff = Math.max(0, tax - charityTax);
-        tipEl.innerHTML = '💡 <b>節稅提示：</b>一般出租直接扣除 43% 必要費用；若房客申請租金補貼轉作<b>公益出租人</b>，每年可再省綜所稅 <b>' + fmt(diff) + '</b>，且房屋稅與地價稅享自用住宅優惠稅率！';
-      } else {
-        tipEl.innerHTML = '💡 <b>公益出租人優勢：</b>享每月 15,000 元免稅額，超過部分再扣 43% 必要費用，房屋稅與地價稅同步比照自用住宅稅率。';
-      }
-    }
-
-    window.onload = function() {
-      calcWithhold();
-      calcAnnual();
-    };
-  </script>
+        <option value="6">6 個月</option>
+      </select>
+    </div>
+    <div class="res">
+      <div class="rm">
+        <div class="ti">預估全年新增綜所稅額</div>
+        <div class="am" id="atax">$20,520 元</div>
+      </div>
+      <div class="rd">
+        <div class="dr"><span>全年總租金收入：</span><span id="ag">$300,000 元</span></div>
+        <div class="dr"><span>每月免稅額扣除：</span><span id="ae">$0 元</span></div>
+        <div class="dr"><span>必要費用扣除 (43%)：</span><span id="ax">$129,000 元</span></div>
+        <div class="dr hl"><span>實際併入所得淨額：</span><span id="an">$171,000 元</span></div>
+      </div>
+      <div class="tip" id="atip"></div>
+    </div>
+  </div>
+  <a href="tel:0968783477" class="btn">📞 委託出租與稅務試算諮詢｜撥打 0968-783-477</a>
+  <div class="nt">※ 所得稅超過2,000元、二代健保達20,000元起扣</div>
+</div>
+<script>
+var tm='inc',am='normal';
+function sw(n){document.getElementById('p1').style.display=n==1?'block':'none';document.getElementById('p2').style.display=n==2?'block':'none';document.getElementById('n1').className=n==1?'tab on':'tab';document.getElementById('n2').className=n==2?'tab on':'tab'}
+function sam(m){am=m;document.getElementById('s1').className=m=='normal'?'tab on':'tab';document.getElementById('s2').className=m=='charity'?'tab on':'tab';ca()}
+function stm(m){tm=m;document.getElementById('o1').className=m=='inc'?'ri on':'ri';document.getElementById('o1').innerText=m=='inc'?'● 租金已含稅':'○ 租金已含稅';document.getElementById('o2').className=m=='exc'?'ri on':'ri';document.getElementById('o2').innerText=m=='exc'?'● 租金未稅 (實拿)':'○ 租金未稅 (實拿)';cw()}
+function f(n){return'$'+Math.floor(n).toLocaleString('zh-TW')+' 元'}
+function cw(){
+var t=document.getElementById('lt').value,v=parseFloat(document.getElementById('wr').value)||0,g=0,tx=0,nh=0,nt=0;
+if(t=='corp'){g=nt=v;document.getElementById('wtl').innerText='代扣所得稅 (0%)：';document.getElementById('wdead').innerText='※ 法人房東應開立發票，承租公司免扣繳與健保'}
+else if(t=='foreign'){document.getElementById('wtl').innerText='代扣所得稅 (20%)：';document.getElementById('wdead').innerText='※ 外國人：給付日起 10 日內完成扣繳申報';if(tm=='inc'){g=v;tx=Math.floor(g*.2);nt=g-tx}else{nt=v;g=Math.round(nt/.8);tx=g-nt}}
+else{document.getElementById('wtl').innerText='代扣所得稅 (10%)：';document.getElementById('wdead').innerText='※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書';if(tm=='inc'){g=v;tx=Math.floor(g*.1)>2000?Math.floor(g*.1):0;nh=g>=20000?Math.floor(g*.0211):0;nt=g-tx-nh}else{nt=v;var eg=nt/.8789;if(Math.floor(eg*.1)>2000&&eg>=20000){g=Math.floor(nt/.8789);tx=Math.floor(g*.1);nh=Math.floor(g*.0211);if(g-tx-nh<nt){g++;tx=Math.floor(g*.1);nh=Math.floor(g*.0211)}}else if(nt/.9789>=20000){g=Math.round(nt/.9789);nh=Math.floor(g*.0211)}else{g=nt}}}
+document.getElementById('wt1').innerText=tm=='inc'?'實際支付房東租金 (未稅實拿)':'承租方需編列租金總額 (含稅)';
+document.getElementById('wa1').innerText=f(tm=='inc'?nt:g);
+document.getElementById('wg').innerText=f(g);document.getElementById('wt').innerText=f(tx);document.getElementById('wn').innerText=f(nh);document.getElementById('wd').innerText=f(tx+nh);document.getElementById('wnet').innerText=f(nt)
+}
+function ca(){
+var r=parseFloat(document.getElementById('art').value)||.12,rn=parseFloat(document.getElementById('ar').value)||0,m=parseInt(document.getElementById('am').value)||12;
+var g=rn*m,ex=am=='charity'?Math.min(g,15000*m):0,ae=Math.max(0,g-ex),xp=ae*.43,nt=Math.max(0,ae-xp),tx=nt*r;
+document.getElementById('atax').innerText=f(tx);document.getElementById('ag').innerText=f(g);document.getElementById('ae').innerText=f(ex);document.getElementById('ax').innerText=f(xp);document.getElementById('an').innerText=f(nt);
+var ce=Math.min(g,15000*m),ct=Math.max(0,(g-ce)*.57*r),df=Math.max(0,tx-ct);
+document.getElementById('atip').innerHTML=am=='normal'?'💡 <b>節稅提示：</b>一般出租扣 43% 費用；若轉作<b>公益出租人</b>，每年可再省綜所稅 <b>'+f(df)+'</b>，房屋稅與地價稅同步享自用優惠！':'💡 <b>公益出租人優勢：</b>享每月 15,000 元免稅額，超過部分再扣 43% 必要費用，房屋稅與地價稅同步比照自用住宅稅率。'
+}
+cw();ca();
+</script>
 </body>
 </html>
