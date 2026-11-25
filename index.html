@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>租金扣繳與稅金計算機｜林佳麒 C.C.LIN (CCLIN)｜住商不動產</title>
+<title>租金扣繳與稅金計算機｜C.C.LIN (CCLIN)</title>
 <style>
 :root{--p:#006837;--bg:#f4f7f5;--c:#fff;--t:#222;--m:#666;--b:#dce5df}
 *{box-sizing:border-box;font-family:-apple-system,"Noto Sans TC",sans-serif;-webkit-tap-highlight-color:transparent}
@@ -49,7 +49,7 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
 
   <div class="top-rent">
     <label>每期 / 每月租金金額 (元)</label>
-    <input type="number" id="rent" value="25000" oninput="calcAll()" onchange="calcAll()">
+    <input type="text" inputmode="numeric" id="rent" value="0" oninput="handleRentInput(this)" onfocus="this.select()">
   </div>
 
   <div class="tabs">
@@ -82,14 +82,14 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
     <div class="res">
       <div class="rm">
         <div class="ti" id="wt1">實際支付房東租金 (未稅實拿)</div>
-        <div class="am" id="wa1">$21,973 元</div>
+        <div class="am" id="wa1">$0 元</div>
       </div>
       <div class="rd">
-        <div class="dr"><span>每期租金總額 (含稅)：</span><span id="wg">$25,000 元</span></div>
-        <div class="dr"><span id="wtl">代扣所得稅 (10%)：</span><span id="wt">$2,500 元</span></div>
-        <div class="dr"><span>代扣二代健保 (2.11%)：</span><span id="wn">$527 元</span></div>
-        <div class="dr hl"><span>租扣＋二代健保總金額：</span><span id="wd">$3,027 元</span></div>
-        <div class="dr hl"><span>實際支付房東 (未稅)：</span><span id="wnet">$21,973 元</span></div>
+        <div class="dr"><span>每期租金總額 (含稅)：</span><span id="wg">$0 元</span></div>
+        <div class="dr"><span id="wtl">代扣所得稅 (10%)：</span><span id="wt">$0 元</span></div>
+        <div class="dr"><span>代扣二代健保 (2.11%)：</span><span id="wn">$0 元</span></div>
+        <div class="dr hl"><span>租扣＋二代健保總金額：</span><span id="wd">$0 元</span></div>
+        <div class="dr hl"><span>實際支付房東 (未稅)：</span><span id="wnet">$0 元</span></div>
       </div>
       <div class="tip" id="wdead" style="color:#b45309;font-weight:600;text-align:center">※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書</div>
     </div>
@@ -130,13 +130,13 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
     <div class="res">
       <div class="rm">
         <div class="ti">預估全年新增綜所稅額</div>
-        <div class="am" id="atax">$20,520 元</div>
+        <div class="am" id="atax">$0 元</div>
       </div>
       <div class="rd">
-        <div class="dr"><span>全年總租金收入：</span><span id="ag">$300,000 元</span></div>
+        <div class="dr"><span>全年總租金收入：</span><span id="ag">$0 元</span></div>
         <div class="dr"><span>每月免稅額扣除：</span><span id="ae">$0 元</span></div>
-        <div class="dr"><span>必要費用扣除 (43%)：</span><span id="ax">$129,000 元</span></div>
-        <div class="dr hl"><span>實際併入所得淨額：</span><span id="an">$171,000 元</span></div>
+        <div class="dr"><span>必要費用扣除 (43%)：</span><span id="ax">$0 元</span></div>
+        <div class="dr hl"><span>實際併入所得淨額：</span><span id="an">$0 元</span></div>
       </div>
       <div class="tip" id="atip"></div>
     </div>
@@ -150,6 +150,16 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
 </div>
 <script>
 var lt='local',tm='inc',am='normal';
+function handleRentInput(el){
+  var v = el.value.replace(/[^0-9]/g, '');
+  if (v === '') {
+    v = '0';
+  } else if (v.length > 1) {
+    v = v.replace(/^0+/, '') || '0';
+  }
+  el.value = v;
+  calcAll();
+}
 function sw(n){document.getElementById('p1').style.display=n==1?'block':'none';document.getElementById('p2').style.display=n==2?'block':'none';document.getElementById('n1').className=n==1?'tab on':'tab';document.getElementById('n2').className=n==2?'tab on':'tab'}
 function slt(v){lt=v;document.getElementById('lt-local').className=v=='local'?'lt-item on':'lt-item';document.getElementById('lt-foreign').className=v=='foreign'?'lt-item on':'lt-item';document.getElementById('lt-corp').className=v=='corp'?'lt-item on':'lt-item';cw()}
 function sam(m){am=m;document.getElementById('s1').className=m=='normal'?'tab on':'tab';document.getElementById('s2').className=m=='charity'?'tab on':'tab';ca()}
