@@ -19,13 +19,14 @@ body{margin:0;padding:16px;background:var(--bg);color:var(--t);display:flex;just
 input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--b);border-radius:10px;background:#fafcfb}
 .top-rent{background:#f7faf8;border:1px solid #cce3d5;border-radius:12px;padding:12px;margin-bottom:14px}
 .top-rent input{background:#fff;font-size:18px;font-weight:700;color:var(--p)}
+.field-note{margin-top:6px;font-size:11px;color:var(--m);line-height:1.5}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lt-list{display:grid;gap:7px}
 .lt-item{padding:9px 12px;border:1px solid var(--b);border-radius:10px;background:#fafcfb;cursor:pointer;user-select:none}
 .lt-item.on{border-color:var(--p);background:#eef5f1}
 .lt-title{font-size:14px;font-weight:700;color:var(--t)}
 .lt-item.on .lt-title{color:var(--p)}
-.lt-sub{font-size:12px;color:#888;margin-top:2px}
+.lt-sub{font-size:12px;color:#888;margin-top:3px;line-height:1.5}
 .rg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
 .ri{text-align:center;padding:11px;border:1px solid var(--b);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;background:#fafcfb;user-select:none}
 .ri.on{border-color:var(--p);background:#eef5f1;color:var(--p)}
@@ -39,7 +40,7 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
 .btn{display:block;width:100%;text-align:center;margin-top:14px;padding:12px;background:var(--p);color:#fff;text-decoration:none;font-weight:700;font-size:15px;line-height:1.45;border-radius:10px;transition:background .2s}
 .btn:hover{background:#00522b}
 .btn-sub{display:block;font-size:13px;font-weight:500;opacity:.92;margin-top:2px}
-.nt{text-align:center;font-size:11px;color:#888;margin-top:8px}
+.nt{text-align:center;font-size:11px;color:#888;margin-top:8px;line-height:1.45}
 </style>
 </head>
 <body>
@@ -49,8 +50,9 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
   </div>
 
   <div class="top-rent">
-    <label>每期 / 每月租金金額 (元)</label>
+    <label id="rent-label">單次給付租金金額 (元)</label>
     <input type="text" inputmode="numeric" id="rent" value="0" oninput="handleRentInput(this)" onfocus="this.select()">
+    <div class="field-note" id="rent-note">※ 扣繳與二代健保依「單次給付金額」；季付或半年付請輸入單次給付金額</div>
   </div>
 
   <div class="tabs">
@@ -63,16 +65,16 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
       <label>房東身分</label>
       <div class="lt-list">
         <div class="lt-item on" id="lt-local" onclick="slt('local')">
-          <div class="lt-title">本國個人房東</div>
-          <div class="lt-sub">（扣繳10% + 二代健保2.11%）</div>
+          <div class="lt-title">本國個人房東(境内居住者)</div>
+          <div class="lt-sub">扣繳10%|單次稅額逾2,000元;二代健保2.11%|單次達20,000元</div>
         </div>
         <div class="lt-item" id="lt-foreign" onclick="slt('foreign')">
-          <div class="lt-title">非居住者/外國人</div>
-          <div class="lt-sub">（扣繳20%，免二代健保）</div>
+          <div class="lt-title">非境内居住者(含外國籍非居住者)</div>
+          <div class="lt-sub">扣繳20%,無2,000元免扣門檻;健保依實際投保身分判定</div>
         </div>
         <div class="lt-item" id="lt-corp" onclick="slt('corp')">
-          <div class="lt-title">法人/公司房東</div>
-          <div class="lt-sub">（免扣繳健保，需開發票）</div>
+          <div class="lt-title">法人/公司房東(依法開立統一發票)</div>
+          <div class="lt-sub">開立發票免扣繳所得稅與二代健保;營業稅另依發票約定確認</div>
         </div>
       </div>
     </div>
@@ -82,15 +84,15 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
     </div>
     <div class="res">
       <div class="rm">
-        <div class="ti" id="wt1">實際支付房東租金 (未稅實拿)</div>
+        <div class="ti" id="wt1">房東實際實拿淨額</div>
         <div class="am" id="wa1">$0 元</div>
       </div>
       <div class="rd">
-        <div class="dr"><span>每期租金總額 (含稅)：</span><span id="wg">$0 元</span></div>
+        <div class="dr"><span>單次給付總額：</span><span id="wg">$0 元</span></div>
         <div class="dr"><span id="wtl">代扣所得稅 (10%)：</span><span id="wt">$0 元</span></div>
         <div class="dr"><span>代扣二代健保 (2.11%)：</span><span id="wn">$0 元</span></div>
         <div class="dr hl"><span>租扣＋二代健保總金額：</span><span id="wd">$0 元</span></div>
-        <div class="dr hl"><span>實際支付房東 (未稅)：</span><span id="wnet">$0 元</span></div>
+        <div class="dr hl"><span>房東實際實拿淨額：</span><span id="wnet">$0 元</span></div>
       </div>
       <div class="tip" id="wdead" style="color:#b45309;font-weight:600;text-align:center">※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書</div>
     </div>
@@ -102,7 +104,7 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
       <div class="tab" id="s2" onclick="sam('charity')">公益出租人 (1.5萬免稅)</div>
     </div>
     <div class="row">
-      <div class="fg"><label>房東綜所稅率</label>
+      <div class="fg"><label>預估適用邊際稅率</label>
         <select id="art" onchange="ca()">
           <option value="0.05">5% (59萬內)</option>
           <option value="0.12" selected>12% (59~133萬)</option>
@@ -130,12 +132,12 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
     </div>
     <div class="res">
       <div class="rm">
-        <div class="ti">預估全年新增綜所稅額</div>
+        <div class="ti">預估增加稅負 (依所選邊際稅率估算)</div>
         <div class="am" id="atax">$0 元</div>
       </div>
       <div class="rd">
         <div class="dr"><span>全年總租金收入：</span><span id="ag">$0 元</span></div>
-        <div class="dr"><span>每月免稅額扣除：</span><span id="ae">$0 元</span></div>
+        <div class="dr"><span>全年免稅額合計：</span><span id="ae">$0 元</span></div>
         <div class="dr"><span>必要費用扣除 (43%)：</span><span id="ax">$0 元</span></div>
         <div class="dr hl"><span>實際併入所得淨額：</span><span id="an">$0 元</span></div>
       </div>
@@ -147,10 +149,11 @@ input,select{width:100%;padding:10px 12px;font-size:16px;border:1px solid var(--
     林佳麒 C.C.LIN (CCLIN)
     <span class="btn-sub">聯繫｜試算諮詢 住商不動產</span>
   </a>
-  <div class="nt">※ 所得稅超過2,000元、二代健保達20,000元起扣</div>
+  <div class="nt">※ 本工具供快速試算參考（年度稅負為依所選邊際稅率估算，非完整累進級距試算）；正式申報依最新稅法、健保規定及契約為準</div>
 </div>
 <script>
-var lt='local',tm='inc',am='normal';
+var lt='local',tm='inc',am='normal',activeTab=1;
+
 function handleRentInput(el){
   var v = el.value.replace(/[^0-9]/g, '');
   if (v === '') {
@@ -161,28 +164,151 @@ function handleRentInput(el){
   el.value = v;
   calcAll();
 }
-function sw(n){document.getElementById('p1').style.display=n==1?'block':'none';document.getElementById('p2').style.display=n==2?'block':'none';document.getElementById('n1').className=n==1?'tab on':'tab';document.getElementById('n2').className=n==2?'tab on':'tab'}
+
+function updateInputLabel(){
+  var lbl = document.getElementById('rent-label');
+  var note = document.getElementById('rent-note');
+  if (activeTab === 1) {
+    lbl.innerText = '單次給付租金金額 (元)';
+    note.innerHTML = '※ 扣繳與二代健保依「單次給付金額」；季付或半年付請輸入單次給付金額';
+  } else {
+    lbl.innerText = '每月租金金額 (元)';
+    note.innerHTML = '※ 年度試算假設每月給付一次，且所選出租月份均符合對應出租型態與資格';
+  }
+}
+
+function sw(n){
+  activeTab = n;
+  document.getElementById('p1').style.display=n==1?'block':'none';
+  document.getElementById('p2').style.display=n==2?'block':'none';
+  document.getElementById('n1').className=n==1?'tab on':'tab';
+  document.getElementById('n2').className=n==2?'tab on':'tab';
+  updateInputLabel();
+}
+
 function slt(v){lt=v;document.getElementById('lt-local').className=v=='local'?'lt-item on':'lt-item';document.getElementById('lt-foreign').className=v=='foreign'?'lt-item on':'lt-item';document.getElementById('lt-corp').className=v=='corp'?'lt-item on':'lt-item';cw()}
 function sam(m){am=m;document.getElementById('s1').className=m=='normal'?'tab on':'tab';document.getElementById('s2').className=m=='charity'?'tab on':'tab';ca()}
 function stm(m){tm=m;document.getElementById('o1').className=m=='inc'?'ri on':'ri';document.getElementById('o1').innerText=m=='inc'?'● 租金已含稅':'○ 租金已含稅';document.getElementById('o2').className=m=='exc'?'ri on':'ri';document.getElementById('o2').innerText=m=='exc'?'● 租金未稅 (實拿)':'○ 租金未稅 (實拿)';cw()}
 function f(n){return'$'+Math.floor(n).toLocaleString('zh-TW')+' 元'}
 function calcAll(){cw();ca()}
+
+function calcLocalFromGross(g){
+  var rawTx = Math.floor(g * 0.1);
+  var tx = rawTx > 2000 ? rawTx : 0;
+  var nh = g >= 20000 ? Math.floor(g * 0.0211) : 0;
+  var nt = g - tx - nh;
+  return { g: g, tx: tx, nh: nh, nt: nt };
+}
+
+function solveLocalFromNet(targetNet){
+  if (targetNet <= 0) {
+    return { g: 0, tx: 0, nh: 0, nt: 0 };
+  }
+  var lo = targetNet;
+  var hi = Math.max(targetNet, Math.ceil(targetNet / 0.8789) + 500);
+  while (calcLocalFromGross(hi).nt < targetNet) {
+    hi = hi * 2;
+  }
+  while (lo < hi) {
+    var mid = Math.floor((lo + hi) / 2);
+    if (calcLocalFromGross(mid).nt >= targetNet) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  return calcLocalFromGross(lo);
+}
+
+function solveForeignFromNet(targetNet){
+  if (targetNet <= 0) {
+    return { g: 0, tx: 0, nh: 0, nt: 0 };
+  }
+  var g = Math.max(targetNet, Math.ceil(targetNet / 0.8));
+  var tx = Math.floor(g * 0.2);
+  while ((g - tx) < targetNet) {
+    g++;
+    tx = Math.floor(g * 0.2);
+  }
+  return { g: g, tx: tx, nh: 0, nt: g - tx };
+}
+
 function cw(){
-var v=parseFloat(document.getElementById('rent').value)||0,g=0,tx=0,nh=0,nt=0;
-if(lt=='corp'){g=nt=v;document.getElementById('wtl').innerText='代扣所得稅 (0%)：';document.getElementById('wdead').innerText='※ 法人房東應開立發票，承租公司免扣繳與健保'}
-else if(lt=='foreign'){document.getElementById('wtl').innerText='代扣所得稅 (20%)：';document.getElementById('wdead').innerText='※ 外國人：給付日起 10 日內完成扣繳申報';if(tm=='inc'){g=v;tx=Math.floor(g*.2);nt=g-tx}else{nt=v;g=Math.round(nt/.8);tx=g-nt}}
-else{document.getElementById('wtl').innerText='代扣所得稅 (10%)：';document.getElementById('wdead').innerText='※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書';if(tm=='inc'){g=v;tx=Math.floor(g*.1)>2000?Math.floor(g*.1):0;nh=g>=20000?Math.floor(g*.0211):0;nt=g-tx-nh}else{nt=v;var eg=nt/.8789;if(Math.floor(eg*.1)>2000&&eg>=20000){g=Math.floor(nt/.8789);tx=Math.floor(g*.1);nh=Math.floor(g*.0211);if(g-tx-nh<nt){g++;tx=Math.floor(g*.1);nh=Math.floor(g*.0211)}}else if(nt/.9789>=20000){g=Math.round(nt/.9789);nh=Math.floor(g*.0211)}else{g=nt}}}
-document.getElementById('wt1').innerText=tm=='inc'?'實際支付房東租金 (未稅實拿)':'承租方需編列租金總額 (含稅)';
-document.getElementById('wa1').innerText=f(tm=='inc'?nt:g);
-document.getElementById('wg').innerText=f(g);document.getElementById('wt').innerText=f(tx);document.getElementById('wn').innerText=f(nh);document.getElementById('wd').innerText=f(tx+nh);document.getElementById('wnet').innerText=f(nt)
+  var v = parseFloat(document.getElementById('rent').value) || 0;
+  var g = 0, tx = 0, nh = 0, nt = 0;
+
+  if (lt == 'corp') {
+    g = nt = v;
+    tx = 0;
+    nh = 0;
+    document.getElementById('wtl').innerText = '代扣所得稅 (0%)：';
+    document.getElementById('wdead').innerText = '※ 法人房東依法開立統一發票者免扣繳所得稅與二代健保；營業稅另依約定確認';
+  } else if (lt == 'foreign') {
+    document.getElementById('wtl').innerText = '代扣所得稅 (20%)：';
+    document.getElementById('wdead').innerText = '※ 非境內居住者：給付日起 10 日內完成扣繳申報；健保依實際投保身分判定';
+    if (tm == 'inc') {
+      g = v;
+      tx = Math.floor(g * 0.2);
+      nt = g - tx;
+    } else {
+      var resFor = solveForeignFromNet(v);
+      g = resFor.g;
+      tx = resFor.tx;
+      nh = resFor.nh;
+      nt = resFor.nt;
+    }
+  } else {
+    document.getElementById('wtl').innerText = '代扣所得稅 (10%)：';
+    document.getElementById('wdead').innerText = '※ 本國個人房東：承租公司應於次月 10 日前繳納扣繳稅款書（單次給付達2萬計收二代健保）';
+    if (tm == 'inc') {
+      var resInc = calcLocalFromGross(v);
+      g = resInc.g;
+      tx = resInc.tx;
+      nh = resInc.nh;
+      nt = resInc.nt;
+    } else {
+      var resExc = solveLocalFromNet(v);
+      g = resExc.g;
+      tx = resExc.tx;
+      nh = resExc.nh;
+      nt = resExc.nt;
+    }
+  }
+
+  document.getElementById('wt1').innerText = tm == 'inc' ? '房東實際實拿淨額' : '承租方需編列給付總額';
+  document.getElementById('wa1').innerText = f(tm == 'inc' ? nt : g);
+  document.getElementById('wg').innerText = f(g);
+  document.getElementById('wt').innerText = f(tx);
+  document.getElementById('wn').innerText = f(nh);
+  document.getElementById('wd').innerText = f(tx + nh);
+  document.getElementById('wnet').innerText = f(nt);
 }
+
 function ca(){
-var r=parseFloat(document.getElementById('art').value)||.12,rn=parseFloat(document.getElementById('rent').value)||0,m=parseInt(document.getElementById('am').value)||12;
-var g=rn*m,ex=am=='charity'?Math.min(g,15000*m):0,ae=Math.max(0,g-ex),xp=ae*.43,nt=Math.max(0,ae-xp),tx=nt*r;
-document.getElementById('atax').innerText=f(tx);document.getElementById('ag').innerText=f(g);document.getElementById('ae').innerText=f(ex);document.getElementById('ax').innerText=f(xp);document.getElementById('an').innerText=f(nt);
-var ce=Math.min(g,15000*m),ct=Math.max(0,(g-ce)*.57*r),df=Math.max(0,tx-ct);
-document.getElementById('atip').innerHTML=am=='normal'?'💡 <b>節稅提示：</b>一般出租扣 43% 費用；若轉作<b>公益出租人</b>，每年可再省綜所稅 <b>'+f(df)+'</b>，房屋稅與地價稅同步享自用優惠！':'💡 <b>公益出租人優勢：</b>享每月 15,000 元免稅額，超過部分再扣 43% 必要費用，房屋稅與地價稅同步比照自用住宅稅率。'
+  var r = parseFloat(document.getElementById('art').value) || 0.12;
+  var rn = parseFloat(document.getElementById('rent').value) || 0;
+  var m = parseInt(document.getElementById('am').value) || 12;
+  var g = rn * m;
+  var ex = am == 'charity' ? Math.min(g, 15000 * m) : 0;
+  var ae = Math.max(0, g - ex);
+  var xp = ae * 0.43;
+  var nt = Math.max(0, ae - xp);
+  var tx = nt * r;
+
+  document.getElementById('atax').innerText = f(tx);
+  document.getElementById('ag').innerText = f(g);
+  document.getElementById('ae').innerText = f(ex);
+  document.getElementById('ax').innerText = f(xp);
+  document.getElementById('an').innerText = f(nt);
+
+  var ce = Math.min(g, 15000 * m);
+  var ct = Math.max(0, (g - ce) * 0.57 * r);
+  var df = Math.max(0, tx - ct);
+  document.getElementById('atip').innerHTML = am == 'normal'
+    ? '💡 <b>節稅提示：</b>一般出租扣 43% 費用；若所選 ' + m + ' 個月均符合<b>公益出租人</b>資格，依所選稅率估算每年可省綜所稅約 <b>' + f(df) + '</b>，符合條件者另可依規定適用房屋稅及地價稅優惠。'
+    : '💡 <b>公益出租人優勢：</b>假設所選 ' + m + ' 個月均符合資格，每屋每月享 15,000 元免稅額，超過部分再扣 43% 必要費用；符合條件者另可依規定適用房屋稅及地價稅優惠。';
 }
+updateInputLabel();
 calcAll();
 </script>
 </body>
